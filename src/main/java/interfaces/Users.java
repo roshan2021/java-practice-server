@@ -13,4 +13,6 @@ public interface Users {
 
 
     boolean validateUsername(String username);
+
+    public void updateUser(User updatedUser);
 }
