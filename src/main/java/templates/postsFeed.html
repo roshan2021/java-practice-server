@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Posts Feed')">
+</head>
+<body>
+<header th:replace="fragments/navbar :: navbar"></header>
+
+<div class="main-bg" th:switch="${hasProfile}">
+    <div class="container" th:case="${true}">
+        <div class="row">
+            <div class="col-md-3" id="mob">
+            </div>
+
+            <div class="sidebar-container">
+
+                <ul class="sidebar-navigation">
+                    <li class="header">
+                        <a href="/feed/posts"><img src="https://i.ibb.co/ykncWn2/logo-cutout.png" class="img-fluid" alt=""></a>
+                    </li>
+                    <li>
+                        <a href="/feed/posts">
+                            <i class="fa fa-home left-nav-icon" aria-hidden="true"></i>Posts
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/feed/events">
+                            <i class="far fa-calendar-alt left-nav-icon " id="left-icon-padding-events" aria-hidden="true"></i>Events
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="'/my-profile/' + ${currentUserProfile.getId()}">
+                            <i class="fas fa-user-alt left-nav-icon " id="left-icon-padding-profile" aria-hidden="true"></i>My Profile
+                        </a>
+                    </li>
+                    <li>
+                        <form th:action="@{/logout}" th:method="post">
+                            <button class="btn-link btn logout-button">
+                                <i class="fas fa-sign-out-alt left-nav-icon"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 mt-3">
+                <div class="card mb-3">
+                    <form action="/posts/create">
+                        <button  class="btn btn-lg  btn-block text-uppercase" id="btn1" value="create a post" type="submit" style="background-color: goldenrod">Create a Post</button>
+                    </form>
+                    <!--                    <div class="card-body">-->
+                    <!--                        <a th:href="'/posts/create'">Post a message, show your skills, or find a match for your gig.</a>-->
+                    <!--                    </div>-->
+                </div>
+                <div th:if="${noPostsFound}">
+                    No posts were found.
+                </div>
+
+                <!--REVERSE POSTS ORDER TO BE DISPLAYED-->
+
+                <div class="card gedf-card" th:each="post : ${posts}">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center">
+
+
+                                <!--                                <div class="mr-2">-->
+                                <!--                                    <img class="rounded-circle" width="45"-->
+                                <!--                                         src="https://cdn.pixabay.com/photo/2017/06/13/12/53/profile-2398782_960_720.png" alt="">-->
+                                <!--                                </div>-->
+                                <div th:each="profile : ${profiles}" class="mr-2">
+                                    <div th:if="${post.owner.id == profile.getOwner().id} ">
+                                        <img  th:src="${profile.profilePhoto}"
+                                              class="rounded-circle" width="45" alt="profile picture">
+                                    </div>
+                                </div>
+
+                                <div class="ml-2">
+
+                                    <div class="h5 m-0" th:text="${post.owner.username}"></div></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body ">
+                        <p class="card-text" th:text="${post.body}"></p>
+                        <!--Image for Post-->
+                        <!--Filestack-->
+                        <div th:if="${post.img} == ''">
+                            <!--                    <img  th:src="@{/img/logoGig.jpg}"-->
+                            <!--                         class="card-img m-2" alt=" ">-->
+                        </div>
+                        <div th:unless="${post.img} == ''">
+                            <img th:src="${post.img}"
+                                 class="card-img" alt="image for post" style="max-height: 300px">
+                        </div>
+                    </div>
+
+                    <!--POST REACTION TO CONNECT TO DATABASE&ndash;&gt;-->
+                    <!--<div>-->
+                    <!--<a th:text="${post.userReactions.size()}"></a>-->
+                    <!--</div>-->
+                    <!--<form th:method="Post" th:action="'/posts/'+ ${post.id} + '/reactions'" >-->
+                    <!--<input type="submit" value="Like">-->
+                    <!--</form>-->
+
+                    <!--POST REACTION TO CONNECT TO DATABASE-->
+                    <div class="card-footer d-flex justify-content-between">
+                        <form th:method="Post" th:action="'/posts/'+ ${post.id} + '/reactions'">
+                            <button  type="submit"
+                                     class="fas fa-thumbs-up card-link btn" style="background-color: goldenrod; " ><i id="like-button-text" onclick="myFunction(this)">
+                            </i><span style="font-family: sans-serif" th:text="' Interested' + ' ' + ${ post.userReactions.size()}"></span>
+                            </button>
+
+                        </form>
+                        <!--<a th:href="'/posts/' + ${post.id} + '/reactions'" class="card-link"><i class="fa fa-gittip"></i> Like</a>-->
+                        <form th:method="GET" th:action="'/posts/' + ${post.id}" class="ml-5">
+                            <button type="submit" style="background-color: goldenrod" value="View Post" class="btn">View Post
+                            </button>
+                        </form>
+                    </div>
+
+
+                    <div class="row bootstrap snippets">
+                        <div class="col-sm-12">
+                            <div class="comment-wrapper">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading mt-3"></div>
+                                    <div class="panel-body">
+
+                                        <form th:action="${'/posts/' + post.id + '/comment'}" method="POST">
+                                            <div class="row mb-4">
+                                                <div class="form-group col-md-9">
+                                                    <input id="content" type="text" name="comment" placeholder="Comment" class="form-control form-control-underlined test">
+                                                </div>
+                                                <br>
+                                                <div class="form-group col-md-3">
+                                                    <button type="submit" class="btn btn-light rounded-pill btn-block shadow-sm">Comment</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-3 mt-3">
+            <div class="card mb-3">
+                <div id="map" style="width: 100%; height:200px"></div>
+                <div class="card-body">
+                    <p class="card-text" id="inputCity" th:text="${currentUserProfile.city} + ', ' + ${currentUserProfile.state}"></p>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <img src="https://promisedlandcsa.com/wp-content/uploads/2013/05/calendar_placeholder.gif"
+                     class="card-img-top" alt="...">
+                <div class="card-body">
+                    <p class="card-text">Your Calendar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container" th:case="${false}">
+    <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <div class="card card-signin my-5">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Create a profile</h5>
+                    <form name="username" class="form-signin" th:action="@{/profile/create}" method="POST"
+                          th:object="${profile}">
+                        <div class="form-label-group">
+                            <input type="text" id="city" class="form-control" name="city" placeholder="city"
+                                   required autofocus/>
+                            <label class="form-root" for="city">City</label>
+                        </div>
+                        <div class="form-label-group">
+                            <input type="text" id="state" class="form-control" placeholder="state"
+                                   name="state"
+                                   required/>
+                            <label class="form-root" for="state">State</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileType">Profile Type</label>
+                            <select class="form-control" id="profileType" name="profileType">
+                                <option>Band</option>
+                                <option>Musician</option>
+                                <option>Venue</option>
+                                <option>Fan</option>
+                            </select>
+                        </div>
+                        <div class="form-label-group">
+                                    <textarea type="text" id="bio" class="form-control" placeholder="bio" name="bio"
+                                              th:rows="4" required></textarea>
+                            <label class="form-root" for="bio"></label>
+                        </div>
+                        <div class="form-label-group">
+                            <input type="text" id="interests" class="form-control" placeholder="interests"
+                                   name="interests" required/>
+                            <label class="form-root" for="interests">Interests</label>
+                        </div>
+                        <div class="form-label-group">
+                            <input type="text" id="genres" class="form-control" placeholder="genres"
+                                   name="genres" required/>
+                            <label class="form-root" for="genres">Genres</label>
+                        </div>
+                        <button class="btn btn-lg btn-block text-uppercase" id="btn"
+                                style="background-color: goldenrod" value="Create profile" type="submit">Create profile
+                        </button>
+                        <hr class="my-4">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--Filestack-->
+<script
+        src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+        crossorigin="anonymous"></script>
+<script src="//static.filestackapi.com/filestack-js/3.x.x/filestack.min.js"></script>
+
+
+<!--Filestack-->
+<script th:inline="javascript">
+    const options = {
+        onUploadDone:
+            function (res) {
+                $("#stashFilestackURL").val(res.filesUploaded[0].url);
+            }
+    }
+    let apiKey = [[${apiKey}]]
+    const client = filestack.init(apiKey);
+
+    $("#upload").click(function () {
+        client.picker(options).open()
+    });
+</script>
+
+
+<script>
+    const input = document.getElementById("search-input");
+    const searchBtn = document.getElementById("search-btn");
+
+    const expand = () => {
+        searchBtn.classList.toggle("close");
+        input.classList.toggle("square");
+    };
+
+    searchBtn.addEventListener("click", expand);
+
+</script>
+
+<script th:replace="fragments/map-scripts-and-div :: jquery-script"></script>
+<script th:replace="fragments/map-scripts-and-div :: key-script"></script>
+<script th:replace="fragments/map-scripts-and-div :: mapbox-script"></script>
+<script th:replace="fragments/map-scripts-and-div :: geocode-script"></script>
+
+<script th:inline="javascript">
+
+    var city = [[${currentUserProfile.city}]];
+
+    geocode(city, mapboxToken).then(function (result) {
+        console.log(result);
+        mapboxgl.accessToken = mapboxToken;
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v9',
+            zoom: 12,
+            center: (result)
+        });
+    });
+</script>
+</body>
+</html>>
