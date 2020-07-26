@@ -63,4 +63,62 @@ public class Post {
         this.userReactions = userReactions;
         this.comments = comments;
     }
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Date getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public List<PostComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<PostComment> comments) {
+        this.comments = comments;
+    }
+
+    public List<User> getUserReactions() {
+        return userReactions;
+    }
+
+    public void setUserReactions(List<User> userReactions) {
+        this.userReactions = userReactions;
+    }
+}
+
+
 
