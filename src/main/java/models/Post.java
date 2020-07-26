@@ -23,3 +23,20 @@ public class Post {
 
     @DateTimeFormat
     private Date dateTime;
+
+    @OneToOne
+    private User owner;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "posts_users",
+            joinColumns = {@JoinColumn(name = "post_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private List<User> userReactions;
+
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+    private List<PostComment> comments;
+
