@@ -40,3 +40,27 @@ public class Post {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
     private List<PostComment> comments;
 
+    public Post() {
+    }
+
+    public Post(String img, String body, Date dateTime, User owner, List<User> userReactions, List<PostComment> comments) {
+        this.img = img;
+        this.body = body;
+        this.dateTime = dateTime;
+        this.owner = owner;
+        this.userReactions = userReactions;
+        this.comments = comments;
+    }
+
+
+
+    public Post(long id, String img, String body, Date dateTime, User owner, List<User> userReactions, List<PostComment> comments) {
+        this.id = id;
+        this.img = img;
+        this.body = body;
+        this.dateTime = dateTime;
+        this.owner = owner;
+        this.userReactions = userReactions;
+        this.comments = comments;
+    }
+
